@@ -1,0 +1,76 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Boutons modernes -->
+    <Style x:Key="ModernButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="#3E3E5E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderBrush" Value="#2E2E4E"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!-- Fond et bordures du bouton -->
+                        <Rectangle Fill="{TemplateBinding Background}" 
+                                   Stroke="{TemplateBinding BorderBrush}" 
+                                   StrokeThickness="{TemplateBinding BorderThickness}" 
+                                   RadiusX="6" RadiusY="6"/>
+                        <!-- Contenu du bouton -->
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Survol de la souris -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#4E4E6E"/>
+                            <Setter Property="BorderBrush" Value="#5E5E7E"/>
+                        </Trigger>
+                        <!-- Lors de l'appui -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#2E2E4E"/>
+                            <Setter Property="BorderBrush" Value="#1E1E3E"/>
+                        </Trigger>
+                        <!-- Desactivation du bouton -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="#1E1E2E"/>
+                            <Setter Property="Foreground" Value="#666666"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Zone de recherche -->
+    <Style x:Key="SearchBoxStyle" TargetType="TextBox">
+        <Setter Property="Background" Value="#2E2E3E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="BorderBrush" Value="#3E3E5E"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <!-- Fond et bordures de la zone de recherche -->
+                        <Rectangle Fill="{TemplateBinding Background}" 
+                                   Stroke="{TemplateBinding BorderBrush}" 
+                                   StrokeThickness="{TemplateBinding BorderThickness}" 
+                                   RadiusX="6" RadiusY="6"/>
+                        <!-- Contenu defilable -->
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="4"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
