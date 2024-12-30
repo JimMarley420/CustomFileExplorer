@@ -4,6 +4,7 @@ using CustomFileExplorer.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 
 namespace CustomFileExplorer.ViewModels
 {
@@ -28,6 +29,9 @@ namespace CustomFileExplorer.ViewModels
         public IRelayCommand GoBackCommand { get; }
         public IRelayCommand RefreshCommand { get; }
         public IRelayCommand SearchCommand { get; }
+        public IRelayCommand ReplaceCommand { get; }
+        public IRelayCommand<FileItem> DeleteCommand { get; }
+        public IRelayCommand<FileItem> RenameCommand { get; }
 
         public MainViewModel()
         {
@@ -36,6 +40,9 @@ namespace CustomFileExplorer.ViewModels
             GoBackCommand = new RelayCommand(GoBack);
             RefreshCommand = new RelayCommand(Refresh);
             SearchCommand = new RelayCommand(Search);
+            ReplaceCommand = new RelayCommand(Replace);
+            DeleteCommand = new RelayCommand<FileItem>(Delete);
+            RenameCommand = new RelayCommand<FileItem>(Rename);
 
             // Charger le dossier par défaut
             LoadDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
@@ -47,12 +54,10 @@ namespace CustomFileExplorer.ViewModels
 
             if (item.IsDirectory)
             {
-                // Charger le contenu du dossier
                 LoadDirectory(item.FullPath);
             }
             else
             {
-                // Ouvrir un fichier avec l'application par défaut
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = item.FullPath,
@@ -95,6 +100,48 @@ namespace CustomFileExplorer.ViewModels
             }
         }
 
+        private void Replace()
+        {
+            var dialog = new Views.ReplaceDialog(); // Création de la boîte de dialogue
+            if (dialog.ShowDialog() == true) // Si l'utilisateur valide
+            {
+                var search = dialog.SearchText;
+                var replace = dialog.ReplaceText;
+
+                foreach (var file in Items.Where(i => !i.IsDirectory))
+                {
+                    var content = File.ReadAllText(file.FullPath);
+                    content = content.Replace(search, replace);
+                    File.WriteAllText(file.FullPath, content);
+                }
+
+                MessageBox.Show("Remplacement effectué avec succès !");
+            }
+        }
+
+
+        private void Delete(FileItem item)
+        {
+            if (item == null || !File.Exists(item.FullPath)) return;
+
+            File.Delete(item.FullPath);
+            Items.Remove(item);
+        }
+
+        private void Rename(FileItem item)
+        {
+            if (item == null || !File.Exists(item.FullPath)) return;
+
+            var newName = Microsoft.VisualBasic.Interaction.InputBox("Entrez le nouveau nom :", "Renommer", item.Name);
+            if (!string.IsNullOrWhiteSpace(newName))
+            {
+                var newPath = Path.Combine(Path.GetDirectoryName(item.FullPath)!, newName);
+                File.Move(item.FullPath, newPath);
+                item.Name = newName;
+                item.FullPath = newPath;
+            }
+        }
+
         private void LoadDirectory(string path)
         {
             if (!Directory.Exists(path)) return;
@@ -102,7 +149,6 @@ namespace CustomFileExplorer.ViewModels
             CurrentPath = path;
             Items.Clear();
 
-            // Ajouter les dossiers
             foreach (var directory in Directory.GetDirectories(path))
             {
                 Items.Add(new FileItem
@@ -113,7 +159,6 @@ namespace CustomFileExplorer.ViewModels
                 });
             }
 
-            // Ajouter les fichiers
             foreach (var file in Directory.GetFiles(path))
             {
                 Items.Add(new FileItem

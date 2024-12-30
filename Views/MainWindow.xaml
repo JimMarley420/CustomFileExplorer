@@ -16,7 +16,8 @@
             <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
                      Style="{StaticResource SearchBoxStyle}" 
                      Width="300" Margin="0,0,10,0"/>
-            <Button Content="Search" Command="{Binding SearchCommand}" Style="{StaticResource ModernButtonStyle}" Margin="0,0,0,0"/>
+            <Button Content="Search" Command="{Binding SearchCommand}" Style="{StaticResource ModernButtonStyle}" Margin="0,0,10,0"/>
+            <Button Content="Replace" Command="{Binding ReplaceCommand}" Style="{StaticResource ModernButtonStyle}" Margin="0,0,10,0"/>
             <TextBlock Text="{Binding CurrentPath}" VerticalAlignment="Center" FontWeight="Bold" Margin="10,0,0,0"/>
         </StackPanel>
 
@@ -28,6 +29,12 @@
                   Background="#2E2E3E" 
                   Foreground="White" 
                   BorderBrush="#1E1E2E">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Supprimer" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                    <MenuItem Header="Renommer" Command="{Binding DataContext.RenameCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="300"/>
